@@ -7,14 +7,18 @@ export const config = {
   runtime: "edge",
 };
 
+const VERCEL_ENV = process.env.VERCEL_ENV === "production";
+
+const baseUrl = VERCEL_ENV
+  ? "https://deteksi-kue-api.vercel.app/"
+  : "http://localhost:3000/";
+
 const app = new Hono().basePath("/api");
 
 app.get("/", (c) => {
-  const VERCEL_ENV = process.env.VERCEL_ENV === "production";
-  const prefixUrl = VERCEL_ENV ? "https://" : "http://";
   const data = staticData.map((item) => ({
     ...item,
-    image: prefixUrl + process.env.VERCEL_URL + "/" + item.image,
+    image: baseUrl + item.image,
   }));
 
   return c.json(data);
